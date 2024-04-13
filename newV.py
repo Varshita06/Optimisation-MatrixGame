@@ -1,47 +1,62 @@
-from pulp import *
-A = [[0, -1, 2],
-    [3, 0, -4],
-    [-5, 6, 0]]
+import pickle
 
-AT=[[A[0][i],A[1][i],A[2][i]] for i in range(len(A))]
-print(AT)
-x = []
+while True:
+    print("")
+    print("1.read the matrix")
+    print("2.delete a matrix")
+    print("3.delete all matrix")
+    print("4.insert new matrix")
+    print("5.exit")
+    print("")
+    y = int(input("input:"))
+    print("")
+    if y == 1:
+        n = 0
+        with open("mybinary.dat","rb") as file:
+            while True: 
+                try:
+                    n+=1
+                    inp = pickle.load(file)
+                    print("MATRIX"+str(n)+":")
+                    i = [print(i) for i in inp]
+                    print("")
 
+                except:
+                    break
+    elif y == 1:
+        num = int(input("enter the matrix to delete:"))
 
-# I shall assume the matrix is of size 3 x 3
-n = len(AT[0])
+        #reading
+        out = []
+        with open("mybinary.dat","rb") as file:
+            while True: 
+                try:
+                    inp = pickle.load(file)
+                    out.append(inp)
+                except:
+                    break
 
-# Need to maximise w such that (we <= Ax) & (x[i] >= 0) & (sum(x[i]) = 1)
+        #writing
+        with open("mybinary.dat","wb") as file:
+            for i in range(len(output)):
+                if i+1 != num:
+                    pickle.dump(output[i])
 
+    elif y == 3:
+        if input("are you sure(Y/N)") == "Y":
+            with open("mybinary.dat","wb") as file:
+                pass
 
-model = LpProblem("MatrixGame", sense=LpMaximize)
+    elif y == 4:
+        mat = []
+        for i in range(int(input("number of rows:"))):
+            row = eval(input("enter the row:"))
+            mat.append(row)
 
+        with open("mybinary.dat","ab") as file:
+            pickle.dump(mat,file)
 
-# Decision variables
-
-for i in range(n):
-    x.append(i)
-    x[i] = LpVariable("x_"+str(i), 0, None, LpContinuous)
-
-w = LpVariable("Payoff", None, None, LpContinuous)
-
-
-# Constraints
-
-for i in range(len(AT)):
-    model += LpAffineExpression([(x[j],AT[i][j]) for j in range(n)]) >= w
-
-model += LpAffineExpression([(x[j],1) for j in range(n)]) == 1
-
-
-# Objective function
-
-model += w
-
-# Solve the model, and silence the logging
-
-model.solve(PULP_CBC_CMD(msg=False))
-
-
-for v in model.variables():
-    print(v.name, "=", v.varValue)
+    elif y == 5:
+        break
+    else:
+        print("invalid input")
